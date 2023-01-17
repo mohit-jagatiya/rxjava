@@ -6,24 +6,34 @@ RxJava is a Java-based implementation of Reactive Programming, which is a progra
 Here is an example of how to use RxJava in an Android application to make a network request:
 
 First, add the following dependencies to your app's build.gradle file:
-Copy code
-implementation 'io.reactivex.rxjava2:rxjava:2.2.19'
-implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+
+# implementation 'io.reactivex.rxjava2:rxjava:2.2.19'
+
+# implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+
+
 Next, create an instance of the Retrofit library, which is a popular networking library for Android:
-Copy code
+
+
 Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://jsonplaceholder.typicode.com/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
+                
+                
 Create an interface for your API endpoints:
-Copy code
+
+
 interface ApiService {
     @GET("posts")
     Single<List<Post>> getPosts();
 }
+  
+  
 In your activity or fragment, create an instance of the ApiService interface and call the desired endpoint:
-Copy code
+
+  
 ApiService apiService = retrofit.create(ApiService.class);
 apiService.getPosts()
     .subscribeOn(Schedulers.io())
@@ -44,6 +54,8 @@ apiService.getPosts()
             // handle error
         }
     });
+  
+  
 This example uses a Single observable, which emits a single item or an error, to make a GET request to a JSONPlaceholder API and retrieve a list of posts. The subscribeOn method sets the thread where the request will be made, in this case, the IO thread, and observeOn sets the thread where the result will be processed, in this case, the main thread, so that the UI can be updated.
 
 It's important to note that, this is just a simple example, in real world application you should handle error and dispose the request in a proper way.
