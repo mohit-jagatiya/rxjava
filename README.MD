@@ -1,63 +1,72 @@
 # rxjava
 
 
-RxJava is a Java-based implementation of Reactive Programming, which is a programming paradigm that emphasizes the handling of asynchronous data streams. It is widely used in Android development for handling tasks such as network requests, database operations, and user interactions.
+RxJava is a powerful tool for handling asynchronous and event-based programming in Android. It is an implementation of the ReactiveX library, which provides a set of operators for composing and manipulating observable sequences of data.
 
-Here is an example of how to use RxJava in an Android application to make a network request:
+One of the key benefits of using RxJava in Android is that it allows you to easily create and manage complex, multi-threaded applications without having to worry about low-level threading and synchronization issues. This can significantly reduce the amount of boilerplate code you need to write, and make your code more readable and maintainable.
+
+To get started with RxJava in Android, you'll first need to add the library to your project. You can do this by adding the following line to your build.gradle file:
 
 First, add the following dependencies to your app's build.gradle file:
+```groovy
 
 # implementation 'io.reactivex.rxjava2:rxjava:2.2.19'
 
 # implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
 
+```
+Once you've added the library, you can start using it in your code. The most basic way to use RxJava is to create an observable sequence, which is a stream of data that you can subscribe to. For example, you can create an observable sequence of integers like this:
 
-Next, create an instance of the Retrofit library, which is a popular networking library for Android:
+```java
+Observable<Integer> observable = Observable.just(1, 2, 3, 4, 5);
 
-
-Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://jsonplaceholder.typicode.com/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .build();
+ ```
                 
-                
-Create an interface for your API endpoints:
+You can then subscribe to this sequence by calling the subscribe() method:
 
 
-interface ApiService {
-    @GET("posts")
-    Single<List<Post>> getPosts();
+```java
+observable.subscribe(new Observer<Integer>() {
+  @Override
+  public void onSubscribe(Disposable d) {
+    // called when the subscription is made
+  }
+
+  @Override
+  public void onNext(Integer value) {
+    // called for each item emitted by the observable
+  }
+
+  @Override
+  public void onError(Throwable e) {
+    // called when an error occurs
+  }
+
+  @Override
+  public void onComplete() {
+    // called when the observable completes
+  }
+});
+;
 }
+```  
   
+As you can see, the subscribe() method takes an observer as an argument. The observer is a class that you define, which implements four methods: onSubscribe(), onNext(), onError(), and onComplete(). These methods are called by the observable sequence as it emits data.
+
+One of the most powerful features of RxJava is the ability to compose and manipulate observable sequences using operators. There are many different operators available, including map(), filter(), flatMap(), and zip(). For example, you can use the map() operator to transform the items emitted by an observable:  
   
-In your activity or fragment, create an instance of the ApiService interface and call the desired endpoint:
+```java
+Observable<Integer> observable = Observable.just(1, 2, 3, 4, 5);
 
+observable
+  .map(value -> value * 2)
+  .subscribe(new Observer<Integer>() {
+    // ...
+  });
+ ```
   
-ApiService apiService = retrofit.create(ApiService.class);
-apiService.getPosts()
-    .subscribeOn(Schedulers.io())
-    .observeOn(AndroidSchedulers.mainThread())
-    .subscribe(new SingleObserver<List<Post>>() {
-        @Override
-        public void onSubscribe(Disposable d) {
-            // show progress bar
-        }
+In this example, the map() operator takes each item emitted by the observable and multiplies it by 2.
 
-        @Override
-        public void onSuccess(List<Post> posts) {
-            // update UI with the received data
-        }
+RxJava also has support for scheduling and threading, with Schedulers that allow you to control on which thread an operator will execute, this way you can easily perform operations on the main thread, background thread or other threads.
 
-        @Override
-        public void onError(Throwable e) {
-            // handle error
-        }
-    });
-  
-  
-This example uses a Single observable, which emits a single item or an error, to make a GET request to a JSONPlaceholder API and retrieve a list of posts. The subscribeOn method sets the thread where the request will be made, in this case, the IO thread, and observeOn sets the thread where the result will be processed, in this case, the main thread, so that the UI can be updated.
-
-It's important to note that, this is just a simple example, in real world application you should handle error and dispose the request in a proper way.
-
-RxJava is a powerful tool that can simplify the handling of asynchronous tasks in Android development. It can be used for a wide range of tasks, from simple network requests to complex data processing. However, it does have a steeper learning curve than some other libraries, so it may take some time to fully master.
+In summary, RxJava is a powerful tool for handling asynchronous and event-based programming in Android. It allows you to easily create and manage complex, multi-threaded applications and provides a wide range of operators for composing and manipulating observable sequences. With RxJava,
